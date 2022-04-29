@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace TeknikServis.Formlar
+{
+    public partial class FrmCariEkle : Form
+    {
+        public FrmCariEkle()
+        {
+            InitializeComponent();
+        }
+        DbTeknikServisEntities db = new DbTeknikServisEntities();
+        int secilen;
+        private void btnKaydet_Click(object sender, EventArgs e)
+        {
+            TBLCARI t = new TBLCARI();
+            t.AD = txtAd.Text;
+            t.SOYAD = txtSoyad.Text;
+            t.TELEFON = txtTelefon.Text;
+            t.MAIL = txtMail.Text;
+            t.IL = lookUpEdit2.Text;
+            t.ILCE = lookUpEdit3.Text;
+            t.BANKA = txtBanka.Text;
+            t.VERGIDAIRESI = txtVergiDairesi.Text;
+            t.VERGINO = txtVergiNo.Text;
+            t.STATU = txtStatü.Text;
+            t.ADRES = txtAdres.Text;
+            db.TBLCARI.Add(t);
+            db.SaveChanges();
+            MessageBox.Show("Yeni Cari Sisteme Başarılı Bir Şekilde Eklendi","Bilgi",MessageBoxButtons.OK,MessageBoxIcon.Information);
+        }
+
+        private void btnVazgec_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void lookUpEdit2_EditValueChanged(object sender, EventArgs e)
+        {
+            secilen = int.Parse(lookUpEdit2.EditValue.ToString());
+            lookUpEdit3.Properties.DataSource = (from u in db.TBLILCELER
+                                                 select new
+                                                 {
+                                                     u.id,
+                                                     u.ilce,
+                                                     u.sehir
+
+                                                 }).Where(z => z.sehir == secilen).ToList();
+        }
+
+        private void FrmCariEkle_Load(object sender, EventArgs e)
+        {
+            lookUpEdit2.Properties.DataSource = (from u in db.TBLILLER
+                                                 select new
+                                                 {
+                                                     u.id,
+                                                     u.sehir
+                                                 }).ToList();
+        }
+
+        private void pictureEdit8_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+    }
+}
